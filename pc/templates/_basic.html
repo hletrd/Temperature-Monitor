@@ -1,0 +1,97 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<title>Fridge Monitor</title>
+<script src="/static/jquery.min.js"></script>
+<link rel="stylesheet" href="/static/bootstrap/css/bootstrap.min.css">
+<script src="/static/bootstrap/js/bootstrap.min.js"></script>
+<style type="text/css">
+.window {
+	width: 100%;
+	margin-top: 15px;
+}
+.spacer {
+	height: 0px;
+}
+.custom-select {
+	height: 80px;
+	font-size: 40px;
+}
+.btn {
+	font-size: 40px;
+}
+.display-top {
+	font-size: 7em;
+}
+.display-serial {
+	font-size: 6em;
+}
+.display-temp {
+	font-size: 6em;
+}
+sub {
+	font-size: 0.3em;
+}
+</style>
+<script>
+"use strict";
+var fetchTemp = function() {
+	$.get('/get/temp').done(function(data){
+		$('#temp').html(data + '°C');
+	})
+};
+
+$(document).ready(function() {
+	setInterval(fetchTemp, 500);
+	$('#connect').on('click', function() {
+		$.get('/open/~' + encodeURIComponent($('#port').val()));
+	});
+});
+</script>
+</head>
+<body>
+<div class="window">
+<div class="container-fluid">
+	<div class="row display-top">
+		<div class="col">
+			온도계<sub>치고 좀 비쌈</sub>
+		</div>
+	</div>
+	<div class="spacer"></div>
+	<div class="row display-serial">
+		<div class="col-8">
+			<label>Serial port</label>
+		</div>
+		<div class="col-4">
+			<select id="port" class="custom-select display-4">
+				<option>COM</option>
+				{% for i in ports %}
+				<option value="{{i[0]}}">{{i[0]}}</option>
+				{% endfor %}
+			</select>
+		</div>
+	</div>
+	<div class="spacer"></div>
+	<div class="row">
+		<div class="col-8">
+		</div>
+		<div class="col-4">
+			<button id="connect" class="btn btn-primary btn-block">Connect</button>
+		</div>
+	</div>
+	<div class="spacer"></div>
+	<div class="row display-temp">
+		<div class="col-8">
+			<label>Temperature</label>
+		</div>
+		<div class="col-4">
+			<p id="temp">0.0°C</p>
+		</div>
+	</div>
+</div>
+</div>
+</body>
+</html>
